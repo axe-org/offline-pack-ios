@@ -12,4 +12,6 @@ Pod::Spec.new do |s|
   s.subspec "Core" do |ss|
     ss.source_files           = "OfflinePackage/OfflinePackage/OfflinePackage/*.{h,m}"
   end
+  s.dependency                "SSZipArchive"
+  s.dependency                "MXRSA"
 end
