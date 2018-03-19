@@ -11,6 +11,7 @@
 #import <CommonCrypto/CommonDigest.h>
 #import <UIKit/UIKit.h>
 #import "OPOfflineModule+private.h"
+#import "SSZipArchive.h"
 
 NSString *const OfflinePackServerKeyError = @"error";
 NSString *const OfflinePackServerKeyName = @"name";
@@ -18,7 +19,7 @@ NSString *const OfflinePackServerKeyVersion = @"version";
 NSString *const OfflinePackServerKeyUpdateSetting = @"setting";
 NSString *const OfflinePackServerKeyDownloadURL = @"download_url";
 NSString *const OfflinePackServerKeyPatchsInfo = @"patch_urls";
-
+NSString *const OPOfflineLocalBackFileName = @".axe-offline-pack";
 @interface OPOfflineManager ()
 
 
@@ -97,8 +98,21 @@ NSString *const OfflinePackServerKeyPatchsInfo = @"patch_urls";
     // 最后保存经过检验的包信息。
     _modules = moduleMaps;
     _queue = dispatch_queue_create("org.axe.offline-pack.queue", 0);
-    [self checkUpdate];// 检测更新。
     
+    // 在更新之前，再检测跟随APP打包情况。
+    if (_buildInModules.count) {
+        NSString *lastVersion = [[NSUserDefaults standardUserDefaults] objectForKey:@"axe-offline-pack-version-flag"];
+        NSString *newVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+        if (![newVersion isEqualToString:lastVersion]) {
+            [_buildInModules enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                [self checkBuildInModule:obj];
+            }];
+            [[NSUserDefaults standardUserDefaults] setObject:newVersion forKey:@"axe-offline-pack-version-flag"];
+            CFPreferencesAppSynchronize(kCFPreferencesCurrentApplication);
+        }
+    }
+    // 检测更新。
+    [self checkUpdate];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkUpdate) name:UIApplicationWillEnterForegroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkUpdate) name:UIApplicationDidEnterBackgroundNotification object:nil];
 }
@@ -120,6 +134,42 @@ NSString *const OfflinePackServerKeyPatchsInfo = @"patch_urls";
     _mainPath = [_rootPath stringByAppendingPathComponent:@"main"];
     if(![_fileManager fileExistsAtPath:_mainPath isDirectory:nil]) {
         [_fileManager createDirectoryAtPath:_mainPath withIntermediateDirectories:NO attributes:nil error:nil];
+    }
+}
+
+- (void)checkBuildInModule:(NSString *)moduleFileName {
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:moduleFileName ofType:nil];
+    if (!filePath) {
+        return;
+    }
+    NSString *randomName = [NSUUID UUID].UUIDString;
+    NSString *unzipPath = [_mainPath stringByAppendingPathComponent:randomName];
+    if([SSZipArchive unzipFileAtPath:filePath toDestination:unzipPath]) {
+        OPOfflineModule *module = [self checkModuleInPath:randomName];
+        if (module) {
+            // 检测本地是否有旧包
+            OPOfflineModule *oldModule = [_modules objectForKey:module.name];
+            if (module.version > oldModule.version) {
+                // 如果打包版本号大于本地版本号，则更新替换。
+                // 保存一份备份到目录下。
+                NSString *backupPath = [module.path stringByAppendingPathComponent:OPOfflineLocalBackFileName];
+                NSError *error;
+                [_fileManager copyItemAtPath:filePath toPath:backupPath error:&error];
+                if (error) {
+                    NSLog(@"文件处理出错 ：%@",error);
+                    [_fileManager removeItemAtPath:unzipPath error:nil];
+                    return;
+                }
+                // 备份完成后，在更新记录。
+                [_modules setObject:module forKey:module.name];
+            } else {
+                // 否则，表示打包版本较旧，需要删除。
+                [_fileManager removeItemAtPath:unzipPath error:nil];
+            }
+        }
+    }else {
+        [_fileManager removeItemAtPath:unzipPath error:nil];
+        NSLog(@"解压包失败！！");
     }
 }
 
@@ -165,6 +215,7 @@ NSString *const OfflinePackServerKeyPatchsInfo = @"patch_urls";
         [moduleInfo removeObjectForKey:OfflinePackServerKeyUpdateSetting];
         module.md5Hashs = moduleInfo;
         module.path = path;
+        module.url = [NSURL URLWithString:[@"file://" stringByAppendingString:path]];
         return module;
     }
     
@@ -259,7 +310,7 @@ NSString *const OfflinePackServerKeyPatchsInfo = @"patch_urls";
     @synchronized(self) {
         module = [_modules objectForKey:name];
         if (!module) {
-            OPOfflineModule *module = [[OPOfflineModule alloc] init];
+            module = [[OPOfflineModule alloc] init];
             module.name = name;
             [_modules setObject:module forKey:name];
         }

@@ -280,6 +280,6 @@ static BOOL bspatch(char *oldfile,char *newfile,char *patchfile) {
 
 
 + (BOOL)patchBaseFile:(NSString *)basePath withDiff:(NSString *)diffPath toTargetPath:(NSString *)targetPath {
-    return bspatch((char *)basePath.UTF8String, (char *)basePath.UTF8String,(char *) basePath.UTF8String);
+    return bspatch((char *)basePath.UTF8String, (char *)targetPath.UTF8String,(char *) diffPath.UTF8String);
 }
 @end

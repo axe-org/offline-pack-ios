@@ -91,6 +91,11 @@ NS_ERROR_ENUM(OPDownloadErrorDomain)
 @property (nonatomic,readonly,strong) NSString *path;
 
 
+/**
+ 提供URL接口，本地文件访问要加 file:// ， 所以这里提供个接口，提供这种路径。
+ */
+@property (nonatomic,readonly,strong) NSURL *url;
+
 
 /**
  当需要检测更新时， 如旧的设置为 强制更新，或者当前获取到的设置为 强制更新， 或者没有本地包时。

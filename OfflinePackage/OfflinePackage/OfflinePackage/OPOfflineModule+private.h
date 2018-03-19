@@ -45,7 +45,7 @@ typedef NS_ENUM(NSUInteger, OPOfflineCheckState) {
   主要的是路径 ， 其他的内容都不重要。
  */
 @property (nonatomic,strong) NSString *path;
-
+@property (nonatomic,strong) NSURL *url;
 /**
   更新设置。 如果优先以网络返回值为准， 但是如果网络没有返回，则以本地为准。
  */
@@ -114,3 +114,4 @@ extern NSString *const OfflinePackServerKeyVersion;
 extern NSString *const OfflinePackServerKeyUpdateSetting;
 extern NSString *const OfflinePackServerKeyDownloadURL;
 extern NSString *const OfflinePackServerKeyPatchsInfo;
+extern NSString *const OPOfflineLocalBackFileName;

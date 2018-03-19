@@ -15,7 +15,6 @@
 
 NSErrorDomain const OPDownloadErrorDomain = @"org.axe.offline-pack.error";
 
-static NSString *const OPOfflineLocalBackFileName = @".axe-offline-pack";
 static NSString *const OfflinePackServerKeyModuleName = @"moduleName";
 
 
@@ -288,12 +287,14 @@ static NSString *const OfflinePackServerKeyModuleName = @"moduleName";
                 _downloadURL = nil;
                 _verified = YES;
                 _path = finalPath;
+                _url = [NSURL URLWithString:[@"file://" stringByAppendingString:finalPath]];
                 [self successEnd];
             });
         }
     }else {
         [fileManager removeItemAtPath:unzipPath error:nil];
         [fileManager removeItemAtPath:packPath error:nil];
+        NSLog(@"解压包失败！！！");
         [self endWithErrorCode:OPDownloadErrorUnzipFailed message:@"解压包失败 ！！！"];
     }
     // 处理完成后， 不进行删除， 因为当前可能这些文件正在被使用，重启时再做旧包删除。

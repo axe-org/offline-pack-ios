@@ -29,17 +29,30 @@ AwIDAQAB\
     // Override point for customization after application launch.
     
     int64_t o = [[NSDate date] timeIntervalSince1970] * 1000;
+    [OPOfflineManager sharedManager].buildInModules = @[@"23734cd52ad4a4fb877d8a1e26e5df5f.zip"];
     [[OPOfflineManager sharedManager] setUpWithPublicPKCS8Pem:@"-----BEGIN PUBLIC KEY-----\r\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4YXOMN8CxfZqDy2lpV+kbUgE4knWCG4k0M5/+lzOoEWl9eoohXw0Ln3dY0Cjx2EGsVCR5KzZVIfjRCiyQwdd8QYpmXwkXwbSq4hLtRPMN/411WN/zTgycaDEXlgqz5YZ3RReQzdzqj/KkLvwjFvaW6Q57CeEM52VaRhtYzMIU0WJuUwhsDKODg8jYzAOp3n+gKdUToOGiC/wG9HyU/0qt37gA/eHgRjOUcNJ1KT085+ddTGKHyopN+cTtNQ0nq+nzj5ZhF3Zl6iQ92JWSV9ERE62CvX+dPnyVWjOc/1jmcDgcaejJldFGLc2DjRMn148LM93kLDeCw35vhZTQeS+AwIDAQAB-----END PUBLIC KEY-----" baseURL:@"http://localhost:2677/app/"];
     int64_t k = [[NSDate date] timeIntervalSince1970] * 1000;
     NSLog(@"最终解析耗时 %@ ", @(k - o));
-    NSLog(@"module abc's path : %@",[[OPOfflineManager sharedManager] moduleForName:@"abc"].path);
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        NSLog(@"module abc's path : %@",[[OPOfflineManager sharedManager] moduleForName:@"abc"].path);
-    });
-    
+    OPOfflineModule *module = [[OPOfflineManager sharedManager] moduleForName:@"abc"];
+    if (module.needCheckUpdate) {
+        module.delegate = self;
+        NSLog(@"检测更新");
+    }
     return YES;
 }
 
+- (void)module:(OPOfflineModule *)module didDownloadProgress:(NSInteger)progress {
+    NSLog(@"module : %@ , 当前下载进度 ：%@",module.name,@(progress));
+}
+
+- (void)moduleDidFinishDownload:(OPOfflineModule *)module {
+    NSLog(@"成功现在 ， 当前地址为 ：%@",module.path);
+}
+
+
+- (void)module:(OPOfflineModule *)module didFailLoadWithError:(NSError *)error {
+    NSLog(@"下载失败 ，错误原因 :%@",error);
+}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
