@@ -59,8 +59,8 @@ typedef NS_ENUM(NSUInteger, OPOfflineCheckState) {
 #pragma mark - 判断
 
 /**
- 通过初始化的签名检测。 TODO 需要测试性能再做异步决定。
- 加载时，才做签名校验，如果校验失败，则清空，重新请求服务器。
+ 通过初始化的签名检测。
+ 加载时，才做签名校验，如果校验失败，则删除，重新请求服务器。
  */
 @property (nonatomic,assign) BOOL verified;
 

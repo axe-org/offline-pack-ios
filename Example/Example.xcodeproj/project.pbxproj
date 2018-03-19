@@ -23,6 +23,8 @@
 /* Begin PBXFileReference section */
 		28185007205EAC0B00284A29 /* OPOfflineModule+private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OPOfflineModule+private.h"; sourceTree = "<group>"; };
 		28185016205FADCB00284A29 /* libbz2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.tbd; path = usr/lib/libbz2.tbd; sourceTree = SDKROOT; };
+		2818502020600D7100284A29 /* OPOfflineManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OPOfflineManager.h; path = ../OPOfflineManager.h; sourceTree = "<group>"; };
+		2818502120600D7100284A29 /* OPOfflineModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OPOfflineModule.h; path = ../OPOfflineModule.h; sourceTree = "<group>"; };
 		28E374EB205E4E67007BDB49 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		28E374EE205E4E68007BDB49 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		28E374EF205E4E68007BDB49 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -33,9 +35,7 @@
 		28E374FA205E4E68007BDB49 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		28E374FC205E4E68007BDB49 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		28E374FD205E4E68007BDB49 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		28E37506205E4ED0007BDB49 /* OPOfflineModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OPOfflineModule.h; sourceTree = "<group>"; };
 		28E37507205E4ED0007BDB49 /* OPOfflinePatchUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OPOfflinePatchUtil.h; sourceTree = "<group>"; };
-		28E37509205E4ED0007BDB49 /* OPOfflineManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OPOfflineManager.h; sourceTree = "<group>"; };
 		28E3750B205E4ED0007BDB49 /* OPOfflineModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OPOfflineModule.m; sourceTree = "<group>"; };
 		28E3750D205E4ED0007BDB49 /* OPOfflineManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OPOfflineManager.m; sourceTree = "<group>"; };
 		28E3750F205E4ED0007BDB49 /* OPOfflinePatchUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OPOfflinePatchUtil.m; sourceTree = "<group>"; };
@@ -95,10 +95,10 @@
 		28E37504205E4ED0007BDB49 /* OfflinePackage */ = {
 			isa = PBXGroup;
 			children = (
+				2818502020600D7100284A29 /* OPOfflineManager.h */,
+				2818502120600D7100284A29 /* OPOfflineModule.h */,
 				28185007205EAC0B00284A29 /* OPOfflineModule+private.h */,
-				28E37506205E4ED0007BDB49 /* OPOfflineModule.h */,
 				28E3750B205E4ED0007BDB49 /* OPOfflineModule.m */,
-				28E37509205E4ED0007BDB49 /* OPOfflineManager.h */,
 				28E3750D205E4ED0007BDB49 /* OPOfflineManager.m */,
 				28E37507205E4ED0007BDB49 /* OPOfflinePatchUtil.h */,
 				28E3750F205E4ED0007BDB49 /* OPOfflinePatchUtil.m */,

@@ -8,38 +8,30 @@
 
 /* Begin PBXBuildFile section */
 		28185006205EA94F00284A29 /* OPOfflineModule+private.h in Headers */ = {isa = PBXBuildFile; fileRef = 28185005205EA94F00284A29 /* OPOfflineModule+private.h */; };
-		28E374C3205E46D0007BDB49 /* OfflinePackage.h in Headers */ = {isa = PBXBuildFile; fileRef = 28E374C1205E46D0007BDB49 /* OfflinePackage.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		28E374D6205E4719007BDB49 /* OPOfflineZipUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 28E374CA205E4719007BDB49 /* OPOfflineZipUtil.h */; };
-		28E374D7205E4719007BDB49 /* OPOfflineModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 28E374CB205E4719007BDB49 /* OPOfflineModule.h */; };
+		2818501B20600C5A00284A29 /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 2818501A20600C5A00284A29 /* libbz2.tbd */; };
+		2818501E20600C9600284A29 /* OPOfflineManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 2818501C20600C9600284A29 /* OPOfflineManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2818501F20600C9600284A29 /* OPOfflineModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 2818501D20600C9600284A29 /* OPOfflineModule.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		28E374D8205E4719007BDB49 /* OPOfflinePatchUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 28E374CC205E4719007BDB49 /* OPOfflinePatchUtil.h */; };
-		28E374D9205E4719007BDB49 /* OPOfflineDownloadTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 28E374CD205E4719007BDB49 /* OPOfflineDownloadTask.h */; };
-		28E374DA205E4719007BDB49 /* OPOfflineManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 28E374CE205E4719007BDB49 /* OPOfflineManager.h */; };
-		28E374DB205E4719007BDB49 /* OPOfflineSignUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 28E374CF205E4719007BDB49 /* OPOfflineSignUtil.m */; };
 		28E374DC205E4719007BDB49 /* OPOfflineModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 28E374D0205E4719007BDB49 /* OPOfflineModule.m */; };
-		28E374DD205E4719007BDB49 /* OPOfflineZipUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 28E374D1205E4719007BDB49 /* OPOfflineZipUtil.m */; };
 		28E374DE205E4719007BDB49 /* OPOfflineManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 28E374D2205E4719007BDB49 /* OPOfflineManager.m */; };
-		28E374DF205E4719007BDB49 /* OPOfflineDownloadTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 28E374D3205E4719007BDB49 /* OPOfflineDownloadTask.m */; };
 		28E374E0205E4719007BDB49 /* OPOfflinePatchUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 28E374D4205E4719007BDB49 /* OPOfflinePatchUtil.m */; };
-		28E374E1205E4719007BDB49 /* OPOfflineSignUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 28E374D5205E4719007BDB49 /* OPOfflineSignUtil.h */; };
+		ACD833673AA2CD31C640258E /* libPods-OfflinePackage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EA5D5929D2E39C472142B97D /* libPods-OfflinePackage.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		20E126811580330F5C367711 /* Pods-OfflinePackage.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OfflinePackage.release.xcconfig"; path = "Pods/Target Support Files/Pods-OfflinePackage/Pods-OfflinePackage.release.xcconfig"; sourceTree = "<group>"; };
 		28185005205EA94F00284A29 /* OPOfflineModule+private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "OPOfflineModule+private.h"; sourceTree = "<group>"; };
+		2818501A20600C5A00284A29 /* libbz2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.tbd; path = usr/lib/libbz2.tbd; sourceTree = SDKROOT; };
+		2818501C20600C9600284A29 /* OPOfflineManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OPOfflineManager.h; sourceTree = "<group>"; };
+		2818501D20600C9600284A29 /* OPOfflineModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OPOfflineModule.h; sourceTree = "<group>"; };
 		28E374BE205E46D0007BDB49 /* OfflinePackage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OfflinePackage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		28E374C1205E46D0007BDB49 /* OfflinePackage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OfflinePackage.h; sourceTree = "<group>"; };
 		28E374C2205E46D0007BDB49 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		28E374CA205E4719007BDB49 /* OPOfflineZipUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OPOfflineZipUtil.h; sourceTree = "<group>"; };
-		28E374CB205E4719007BDB49 /* OPOfflineModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OPOfflineModule.h; sourceTree = "<group>"; };
 		28E374CC205E4719007BDB49 /* OPOfflinePatchUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OPOfflinePatchUtil.h; sourceTree = "<group>"; };
-		28E374CD205E4719007BDB49 /* OPOfflineDownloadTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OPOfflineDownloadTask.h; sourceTree = "<group>"; };
-		28E374CE205E4719007BDB49 /* OPOfflineManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OPOfflineManager.h; sourceTree = "<group>"; };
-		28E374CF205E4719007BDB49 /* OPOfflineSignUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OPOfflineSignUtil.m; sourceTree = "<group>"; };
 		28E374D0205E4719007BDB49 /* OPOfflineModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OPOfflineModule.m; sourceTree = "<group>"; };
-		28E374D1205E4719007BDB49 /* OPOfflineZipUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OPOfflineZipUtil.m; sourceTree = "<group>"; };
 		28E374D2205E4719007BDB49 /* OPOfflineManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OPOfflineManager.m; sourceTree = "<group>"; };
-		28E374D3205E4719007BDB49 /* OPOfflineDownloadTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OPOfflineDownloadTask.m; sourceTree = "<group>"; };
 		28E374D4205E4719007BDB49 /* OPOfflinePatchUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OPOfflinePatchUtil.m; sourceTree = "<group>"; };
-		28E374D5205E4719007BDB49 /* OPOfflineSignUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OPOfflineSignUtil.h; sourceTree = "<group>"; };
+		B40493933CBB732C57825269 /* Pods-OfflinePackage.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OfflinePackage.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OfflinePackage/Pods-OfflinePackage.debug.xcconfig"; sourceTree = "<group>"; };
+		EA5D5929D2E39C472142B97D /* libPods-OfflinePackage.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OfflinePackage.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,17 +39,30 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2818501B20600C5A00284A29 /* libbz2.tbd in Frameworks */,
+				ACD833673AA2CD31C640258E /* libPods-OfflinePackage.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		09C18A727EF6568FBC178EB0 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				B40493933CBB732C57825269 /* Pods-OfflinePackage.debug.xcconfig */,
+				20E126811580330F5C367711 /* Pods-OfflinePackage.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		28E374B4205E46D0007BDB49 = {
 			isa = PBXGroup;
 			children = (
 				28E374C0205E46D0007BDB49 /* OfflinePackage */,
 				28E374BF205E46D0007BDB49 /* Products */,
+				09C18A727EF6568FBC178EB0 /* Pods */,
+				C4823B7334A0DE703B207C55 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -72,8 +77,9 @@
 		28E374C0205E46D0007BDB49 /* OfflinePackage */ = {
 			isa = PBXGroup;
 			children = (
+				2818501C20600C9600284A29 /* OPOfflineManager.h */,
+				2818501D20600C9600284A29 /* OPOfflineModule.h */,
 				28E374C9205E4719007BDB49 /* OfflinePackage */,
-				28E374C1205E46D0007BDB49 /* OfflinePackage.h */,
 				28E374C2205E46D0007BDB49 /* Info.plist */,
 			);
 			path = OfflinePackage;
@@ -83,20 +89,21 @@
 			isa = PBXGroup;
 			children = (
 				28185005205EA94F00284A29 /* OPOfflineModule+private.h */,
-				28E374CE205E4719007BDB49 /* OPOfflineManager.h */,
 				28E374D2205E4719007BDB49 /* OPOfflineManager.m */,
-				28E374CB205E4719007BDB49 /* OPOfflineModule.h */,
 				28E374D0205E4719007BDB49 /* OPOfflineModule.m */,
-				28E374CA205E4719007BDB49 /* OPOfflineZipUtil.h */,
-				28E374D1205E4719007BDB49 /* OPOfflineZipUtil.m */,
-				28E374CD205E4719007BDB49 /* OPOfflineDownloadTask.h */,
-				28E374D3205E4719007BDB49 /* OPOfflineDownloadTask.m */,
 				28E374CC205E4719007BDB49 /* OPOfflinePatchUtil.h */,
 				28E374D4205E4719007BDB49 /* OPOfflinePatchUtil.m */,
-				28E374D5205E4719007BDB49 /* OPOfflineSignUtil.h */,
-				28E374CF205E4719007BDB49 /* OPOfflineSignUtil.m */,
 			);
 			path = OfflinePackage;
+			sourceTree = "<group>";
+		};
+		C4823B7334A0DE703B207C55 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2818501A20600C5A00284A29 /* libbz2.tbd */,
+				EA5D5929D2E39C472142B97D /* libPods-OfflinePackage.a */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -106,14 +113,10 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				28E374D7205E4719007BDB49 /* OPOfflineModule.h in Headers */,
-				28E374DA205E4719007BDB49 /* OPOfflineManager.h in Headers */,
-				28E374C3205E46D0007BDB49 /* OfflinePackage.h in Headers */,
-				28E374E1205E4719007BDB49 /* OPOfflineSignUtil.h in Headers */,
-				28E374D8205E4719007BDB49 /* OPOfflinePatchUtil.h in Headers */,
+				2818501E20600C9600284A29 /* OPOfflineManager.h in Headers */,
+				2818501F20600C9600284A29 /* OPOfflineModule.h in Headers */,
 				28185006205EA94F00284A29 /* OPOfflineModule+private.h in Headers */,
-				28E374D6205E4719007BDB49 /* OPOfflineZipUtil.h in Headers */,
-				28E374D9205E4719007BDB49 /* OPOfflineDownloadTask.h in Headers */,
+				28E374D8205E4719007BDB49 /* OPOfflinePatchUtil.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -124,10 +127,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 28E374C6205E46D0007BDB49 /* Build configuration list for PBXNativeTarget "OfflinePackage" */;
 			buildPhases = (
+				47DE1F906F35CD4B35926BE7 /* [CP] Check Pods Manifest.lock */,
 				28E374B9205E46D0007BDB49 /* Sources */,
 				28E374BA205E46D0007BDB49 /* Frameworks */,
 				28E374BB205E46D0007BDB49 /* Headers */,
 				28E374BC205E46D0007BDB49 /* Resources */,
+				606E1446D6BFD4CCA5B4F3E5 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -180,17 +185,50 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		47DE1F906F35CD4B35926BE7 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-OfflinePackage-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		606E1446D6BFD4CCA5B4F3E5 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-OfflinePackage/Pods-OfflinePackage-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		28E374B9205E46D0007BDB49 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				28E374DD205E4719007BDB49 /* OPOfflineZipUtil.m in Sources */,
 				28E374E0205E4719007BDB49 /* OPOfflinePatchUtil.m in Sources */,
 				28E374DC205E4719007BDB49 /* OPOfflineModule.m in Sources */,
 				28E374DE205E4719007BDB49 /* OPOfflineManager.m in Sources */,
-				28E374DB205E4719007BDB49 /* OPOfflineSignUtil.m in Sources */,
-				28E374DF205E4719007BDB49 /* OPOfflineDownloadTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -309,6 +347,7 @@
 		};
 		28E374C7205E46D0007BDB49 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B40493933CBB732C57825269 /* Pods-OfflinePackage.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
@@ -330,6 +369,7 @@
 		};
 		28E374C8205E46D0007BDB49 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 20E126811580330F5C367711 /* Pods-OfflinePackage.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;

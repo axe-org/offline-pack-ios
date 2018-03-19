@@ -357,7 +357,6 @@ NSString *const OPOfflineLocalBackFileName = @".axe-offline-pack";
             if (module.version < 0) {
                 // 剩下的时， 已经检测过，但是没有找到下载地址， 还保存到本地的异常模块。
                 NSLog(@"模块 %@ 并未配置，无法找到 ！！！",name);
-                // TODO 
                 return nil;
             }
         }
@@ -392,7 +391,6 @@ NSString *const OPOfflineLocalBackFileName = @".axe-offline-pack";
 - (BOOL)checkHashs:(NSDictionary *)hashs inPath:(NSString *)path {
     // 校验文件md5值
     __block BOOL hashChecked = YES;
-    // TODO  加载模块时，才进行校验，这样降低校验耗时， 优化初始化速度。
     [hashs enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *hash, BOOL * _Nonnull stop) {
         NSString *filePath = [path stringByAppendingPathComponent:key];
         BOOL isDirectory = NO;
