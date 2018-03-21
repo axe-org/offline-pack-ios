@@ -255,11 +255,11 @@ NSString *const OPOfflineLocalBackFileName = @".axe-offline-pack";
                 [json enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSDictionary *info, BOOL * _Nonnull stop) {
                     OPOfflineModule *current;
                     @synchronized(self) {
-                        current = [_modules objectForKey:key];
+                        current = [self->_modules objectForKey:key];
                         if (!current) {
                             current = [[OPOfflineModule alloc] init];
                             current.name = key;
-                            _modules[key] = current;// 存储新模块。
+                            self->_modules[key] = current;// 存储新模块。
                         }
                     }
                     // 记录一下检测更新时间。
@@ -267,6 +267,7 @@ NSString *const OPOfflineLocalBackFileName = @".axe-offline-pack";
                     // 如果当前有包，则检测更新。
                     NSInteger version = [[info objectForKey:OfflinePackServerKeyVersion] integerValue];
                     if (version > current.version && version > current.newVersion) {
+                        current.newVersion = version;
                         // 则表示要检测更新。
                         if (current.checkState != OPOfflineCheckStateWaiting) {
                             // 如果当前模块自己也在进行检测或者下载，则不处理。
@@ -286,10 +287,10 @@ NSString *const OPOfflineLocalBackFileName = @".axe-offline-pack";
                             downloadURL = [info objectForKey:OfflinePackServerKeyDownloadURL];
                         }
                         current.downloadURL = downloadURL;
+                        current.checkState = OPOfflineCheckStateBeforeDownload;
                         if (current.setting != OPOfflineModuleUpdateSettingOnlyUse) {
                             // 开始下载。
-                            current.checkState = OPOfflineCheckStateBeforeDownload;
-                            dispatch_async(_queue, ^{
+                            dispatch_async(self->_queue, ^{
                                 [current startDownload];
                             });
                         }
@@ -345,6 +346,8 @@ NSString *const OPOfflineLocalBackFileName = @".axe-offline-pack";
             }
             needCheck = YES;
         } else if(module.newVersion && module.downloadURL){
+            // 如果没有超时，且设置了下载链接，则重置为要现在状态。
+            module.checkState = OPOfflineCheckStateBeforeDownload;
             if (module.version < 0) {
                 // 如果模块没有本地内容
                 module.needCheckUpdate = YES;
@@ -379,7 +382,8 @@ NSString *const OPOfflineLocalBackFileName = @".axe-offline-pack";
         }
     }
     // 触发检测与下载。
-    if (needCheck && module.checkState == OPOfflineCheckStateWaiting) {
+    if (needCheck &&
+        (module.checkState == OPOfflineCheckStateWaiting || module.checkState == OPOfflineCheckStateBeforeDownload)) {
         [module startCheck];
     }else if(module.checkState == OPOfflineCheckStateBeforeDownload) {
         [module startDownload];
@@ -394,7 +398,7 @@ NSString *const OPOfflineLocalBackFileName = @".axe-offline-pack";
     [hashs enumerateKeysAndObjectsUsingBlock:^(NSString *key, NSString *hash, BOOL * _Nonnull stop) {
         NSString *filePath = [path stringByAppendingPathComponent:key];
         BOOL isDirectory = NO;
-        if([_fileManager fileExistsAtPath:filePath isDirectory:&isDirectory] && !isDirectory) {
+        if([self->_fileManager fileExistsAtPath:filePath isDirectory:&isDirectory] && !isDirectory) {
             NSString *md5 = [OPOfflineManager hashFromFile:filePath];
             if(![md5 isEqualToString:hash]) {
                 *stop = YES;

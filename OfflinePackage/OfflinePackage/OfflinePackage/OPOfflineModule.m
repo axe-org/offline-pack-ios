@@ -82,23 +82,23 @@ static NSString *const OfflinePackServerKeyModuleName = @"moduleName";
                 [self endWithErrorCode:OPDownloadErrorServer message:errorInfo];
                 return;
             }
-            _lastCheckTime = [NSDate date];// 请求正常的情况下，才记录, 以保证每次有问题的模块，都会请求检测更新。
+            self->_lastCheckTime = [NSDate date];// 请求正常的情况下，才记录, 以保证每次有问题的模块，都会请求检测更新。
             // 进行单独的检测更新，必定是需要去下载的。
             NSInteger newVersion = [[json objectForKey:OfflinePackServerKeyVersion] integerValue];
-            if (newVersion > _version) {
-                _newVersion = newVersion;
+            if (newVersion > self->_version) {
+                self->_newVersion = newVersion;
                 [self printProcess:10];// 检测完成，为10%进度。
-                _setting = [[json objectForKey:OfflinePackServerKeyUpdateSetting] integerValue];
+                self->_setting = [[json objectForKey:OfflinePackServerKeyUpdateSetting] integerValue];
                 NSDictionary *patchsInfo = [json objectForKey:OfflinePackServerKeyPatchsInfo];
-                NSString *downloadURL = [patchsInfo objectForKey:[@(_version) stringValue]];
+                NSString *downloadURL = [patchsInfo objectForKey:[@(self->_version) stringValue]];
                 if (downloadURL) {
-                    _needPatch = YES;
+                    self->_needPatch = YES;
                 } else {
-                    _needPatch = NO;
+                    self->_needPatch = NO;
                     downloadURL = [json objectForKey:OfflinePackServerKeyDownloadURL];
                 }
-                _downloadURL = downloadURL;
-                _checkState = OPOfflineCheckStateBeforeDownload;
+                self->_downloadURL = downloadURL;
+                self->_checkState = OPOfflineCheckStateBeforeDownload;
                 [self startDownload];
             } else {
                 // 则不需要进行更新。
@@ -283,11 +283,11 @@ static NSString *const OfflinePackServerKeyModuleName = @"moduleName";
             // 之前提到的，完成在 100% 之后。。。。
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 // 更新数据。
-                _version = _newVersion;
-                _downloadURL = nil;
-                _verified = YES;
-                _path = finalPath;
-                _url = [NSURL URLWithString:[@"file://" stringByAppendingString:finalPath]];
+                self->_version = self->_newVersion;
+                self->_downloadURL = nil;
+                self->_verified = YES;
+                self->_path = finalPath;
+                self->_url = [NSURL URLWithString:[@"file://" stringByAppendingString:finalPath]];
                 [self successEnd];
             });
         }
