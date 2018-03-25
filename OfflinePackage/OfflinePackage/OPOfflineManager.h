@@ -39,6 +39,16 @@
 + (instancetype)sharedManager;
 
 
+/**
+  必须要设置appID， 这里后台系统支持多app，所以通过一个appID来标记不同应用。
+ */
+@property (nonatomic,copy) NSString *appID;
+
+
+/**
+  APP版本号， 离线包支持版本号控制。 版本号为数字类型，建议使用BuildNumber
+ */
+@property (nonatomic,assign) NSInteger appVersion;
 
 /**
  初始化，加载本地数据，以及检测更新

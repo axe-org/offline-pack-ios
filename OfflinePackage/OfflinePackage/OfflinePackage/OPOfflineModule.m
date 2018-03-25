@@ -64,7 +64,7 @@ static NSString *const OfflinePackServerKeyModuleName = @"moduleName";
         return;
     }
     _checkState = OPOfflineCheckStateChecking;
-    NSString *url = [[[OPOfflineManager sharedManager].queryTaskUrl absoluteString] stringByAppendingFormat:@"?%@=%@",OfflinePackServerKeyModuleName,_name];
+    NSString *url = [[[OPOfflineManager sharedManager].queryTaskUrl absoluteString] stringByAppendingFormat:@"&%@=%@",OfflinePackServerKeyModuleName,_name];
     [[[OPOfflineManager sharedManager].session dataTaskWithURL:[NSURL URLWithString:url] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (error) {
             NSLog(@"检测更新网络异常 : %@",error);

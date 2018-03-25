@@ -56,6 +56,8 @@ NSString *const OPOfflineLocalBackFileName = @".axe-offline-pack";
     dispatch_once(&onceToken, ^{
         manager = [[OPOfflineManager alloc] init];
         manager.checkTimeInterval = 600;
+        manager.appID = @"abc";
+        manager.appVersion = 1;
         manager.lastCheckTime = [NSDate dateWithTimeIntervalSince1970:0];
     });
     return manager;
@@ -67,7 +69,9 @@ NSString *const OPOfflineLocalBackFileName = @".axe-offline-pack";
     _publicPem = [pubicPem copy];
     NSURL *url = [NSURL URLWithString:baseURL];
     _queryAllUrl = [url URLByAppendingPathComponent:@"allPacks"];
+    _queryAllUrl = [NSURL URLWithString:[[_queryAllUrl absoluteString] stringByAppendingFormat:@"?appID=%@&appVersion=%@",_appID,@(_appVersion)]];
     _queryTaskUrl = [url URLByAppendingPathComponent:@"pack"];
+    _queryTaskUrl = [NSURL URLWithString:[[_queryTaskUrl absoluteString] stringByAppendingFormat:@"?appID=%@&appVersion=%@",_appID,@(_appVersion)]];
     // 进行初始化。
     [self initPath];
     // 检测 主路径下模块
