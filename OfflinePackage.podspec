@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name                      = "OfflinePackage"
-  s.version                   = "0.0.1"
+  s.version                   = "0.0.4"
   s.summary                   = "offline-package manager module in iOS"
   s.homepage                  = "https://github.com/CodingForMoney/offline-pack-ios"
   s.license                   = { :type => "MIT"}
