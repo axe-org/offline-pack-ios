@@ -12,7 +12,7 @@
 #import <UIKit/UIKit.h>
 #import "OPOfflineModule+private.h"
 #import "SSZipArchive.h"
-#import "Reachability.h"
+#import "OPUtilReachability.h"
 
 NSString *const OfflinePackServerKeyTags = @"tags";
 NSString *const OfflinePackServerKeyAppVersion = @"appVersion";
