@@ -25,7 +25,7 @@ NS_ERROR_ENUM(OPDownloadErrorDomain)
 
 @class OPOfflineModule;
 /**
-  模块强制更新时， 设置代理，以处理回调。
+  模块强制更新时， 设置代理，以处理回调。阻断式更新时的界面展示。
  */
 @protocol OPOfflineDownloadDelegate<NSObject>
 

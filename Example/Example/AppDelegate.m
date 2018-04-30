@@ -28,18 +28,15 @@ AwIDAQAB\
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-    int64_t o = [[NSDate date] timeIntervalSince1970] * 1000;
-    [OPOfflineManager sharedManager].buildInModules = @[@"23734cd52ad4a4fb877d8a1e26e5df5f.zip"];
-    [OPOfflineManager sharedManager].appID = @"Demo";
-    [OPOfflineManager sharedManager].appVersion = 10;// APP ID 和 APP Version 是必填项。
+//    [OPOfflineManager sharedManager].buildInModules = @[@"23734cd52ad4a4fb877d8a1e26e5df5f.zip"];
+    [OPOfflineManager sharedManager].tags = @[@"utest",@"ehh",@"hellowrold"];
+    [OPOfflineManager sharedManager].appVersion = @"1.0.0";
     [[OPOfflineManager sharedManager] setUpWithPublicPKCS8Pem:@"-----BEGIN PUBLIC KEY-----\r\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4YXOMN8CxfZqDy2lpV+kbUgE4knWCG4k0M5/+lzOoEWl9eoohXw0Ln3dY0Cjx2EGsVCR5KzZVIfjRCiyQwdd8QYpmXwkXwbSq4hLtRPMN/411WN/zTgycaDEXlgqz5YZ3RReQzdzqj/KkLvwjFvaW6Q57CeEM52VaRhtYzMIU0WJuUwhsDKODg8jYzAOp3n+gKdUToOGiC/wG9HyU/0qt37gA/eHgRjOUcNJ1KT085+ddTGKHyopN+cTtNQ0nq+nzj5ZhF3Zl6iQ92JWSV9ERE62CvX+dPnyVWjOc/1jmcDgcaejJldFGLc2DjRMn148LM93kLDeCw35vhZTQeS+AwIDAQAB-----END PUBLIC KEY-----" baseURL:@"http://localhost:2677/app/"];
-    int64_t k = [[NSDate date] timeIntervalSince1970] * 1000;
-    NSLog(@"最终解析耗时 %@ ", @(k - o));
-    OPOfflineModule *module = [[OPOfflineManager sharedManager] moduleForName:@"abc"];
-    if (module.needCheckUpdate) {
-        module.delegate = self;
-        NSLog(@"检测更新");
-    }
+//    OPOfflineModule *module = [[OPOfflineManager sharedManager] moduleForName:@"abc"];
+//    if (module.needCheckUpdate) {
+//        module.delegate = self;
+//        NSLog(@"检测更新");
+//    }
     return YES;
 }
 

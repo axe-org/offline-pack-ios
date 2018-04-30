@@ -12,11 +12,15 @@
 #import <UIKit/UIKit.h>
 #import "OPOfflineModule+private.h"
 #import "SSZipArchive.h"
+#import "Reachability.h"
 
+NSString *const OfflinePackServerKeyTags = @"tags";
+NSString *const OfflinePackServerKeyAppVersion = @"appVersion";
 NSString *const OfflinePackServerKeyError = @"error";
 NSString *const OfflinePackServerKeyName = @"name";
 NSString *const OfflinePackServerKeyVersion = @"version";
-NSString *const OfflinePackServerKeyUpdateSetting = @"setting";
+NSString *const OfflinePackServerKeyDownloadTime = @"download_time";
+NSString *const OfflinePackServerKeyDownloadForce = @"download_force";
 NSString *const OfflinePackServerKeyDownloadURL = @"download_url";
 NSString *const OfflinePackServerKeyPatchsInfo = @"patch_urls";
 NSString *const OPOfflineLocalBackFileName = @".axe-offline-pack";
@@ -46,6 +50,8 @@ NSString *const OPOfflineLocalBackFileName = @".axe-offline-pack";
 
 @property (nonatomic,strong) NSFileManager *fileManager;
 
+@property (nonatomic,strong) OPUtilReachability *reachability;
+
 @end
 
 @implementation OPOfflineManager
@@ -56,8 +62,8 @@ NSString *const OPOfflineLocalBackFileName = @".axe-offline-pack";
     dispatch_once(&onceToken, ^{
         manager = [[OPOfflineManager alloc] init];
         manager.checkTimeInterval = 600;
-        manager.appID = @"abc";
-        manager.appVersion = 1;
+        manager.tags = @[];
+        manager.appVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
         manager.lastCheckTime = [NSDate dateWithTimeIntervalSince1970:0];
     });
     return manager;
@@ -68,10 +74,8 @@ NSString *const OPOfflineLocalBackFileName = @".axe-offline-pack";
     NSParameterAssert([baseURL isKindOfClass:[NSString class]]);
     _publicPem = [pubicPem copy];
     NSURL *url = [NSURL URLWithString:baseURL];
-    _queryAllUrl = [url URLByAppendingPathComponent:@"allPacks"];
-    _queryAllUrl = [NSURL URLWithString:[[_queryAllUrl absoluteString] stringByAppendingFormat:@"?appID=%@&appVersion=%@",_appID,@(_appVersion)]];
+    _queryAllUrl = [url URLByAppendingPathComponent:@"full"];
     _queryTaskUrl = [url URLByAppendingPathComponent:@"pack"];
-    _queryTaskUrl = [NSURL URLWithString:[[_queryTaskUrl absoluteString] stringByAppendingFormat:@"?appID=%@&appVersion=%@",_appID,@(_appVersion)]];
     // 进行初始化。
     [self initPath];
     // 检测 主路径下模块
@@ -106,19 +110,23 @@ NSString *const OPOfflineLocalBackFileName = @".axe-offline-pack";
     // 在更新之前，再检测跟随APP打包情况。
     if (_buildInModules.count) {
         NSString *lastVersion = [[NSUserDefaults standardUserDefaults] objectForKey:@"axe-offline-pack-version-flag"];
-        NSString *newVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
-        if (![newVersion isEqualToString:lastVersion]) {
+        if (![_appVersion isEqualToString:lastVersion]) {
             [_buildInModules enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
                 [self checkBuildInModule:obj];
             }];
-            [[NSUserDefaults standardUserDefaults] setObject:newVersion forKey:@"axe-offline-pack-version-flag"];
+            [[NSUserDefaults standardUserDefaults] setObject:_appVersion forKey:@"axe-offline-pack-version-flag"];
             CFPreferencesAppSynchronize(kCFPreferencesCurrentApplication);
         }
     }
     // 检测更新。
     [self checkUpdate];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkUpdate) name:UIApplicationWillEnterForegroundNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkUpdate) name:UIApplicationDidEnterBackgroundNotification object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(checkUpdate) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    
+    // 监听Wifi状态
+    _reachability = [OPUtilReachability reachabilityForInternetConnection];
+    [_reachability startNotifier];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged) name:kReachabilityChangedNotification object:nil];
 }
 
 - (void)initPath {
@@ -141,6 +149,7 @@ NSString *const OPOfflineLocalBackFileName = @".axe-offline-pack";
     }
 }
 
+// 检测 跟随app打包的模块
 - (void)checkBuildInModule:(NSString *)moduleFileName {
     NSString *filePath = [[NSBundle mainBundle] pathForResource:moduleFileName ofType:nil];
     if (!filePath) {
@@ -208,15 +217,16 @@ NSString *const OPOfflineLocalBackFileName = @".axe-offline-pack";
         }
         NSString *name = [moduleInfo objectForKey:OfflinePackServerKeyName];
         NSString *version = [moduleInfo objectForKey:OfflinePackServerKeyVersion];
-        NSString *setting = [moduleInfo objectForKey:OfflinePackServerKeyUpdateSetting];
         OPOfflineModule *module = [[OPOfflineModule alloc] init];
         module.name = name;
         module.version = [version integerValue];
-        module.setting = [setting integerValue];
+        module.downloadTimeSetting = [[moduleInfo objectForKey:OfflinePackServerKeyDownloadTime] integerValue];
+        module.downloadForceSetting = [[moduleInfo objectForKey:OfflinePackServerKeyDownloadForce] integerValue];
         
         [moduleInfo removeObjectForKey:OfflinePackServerKeyName];
         [moduleInfo removeObjectForKey:OfflinePackServerKeyVersion];
-        [moduleInfo removeObjectForKey:OfflinePackServerKeyUpdateSetting];
+        [moduleInfo removeObjectForKey:OfflinePackServerKeyDownloadTime];
+        [moduleInfo removeObjectForKey:OfflinePackServerKeyDownloadForce];
         module.md5Hashs = moduleInfo;
         module.path = path;
         module.url = [NSURL URLWithString:[@"file://" stringByAppendingString:path]];
@@ -233,6 +243,21 @@ NSString *const OPOfflineLocalBackFileName = @".axe-offline-pack";
     return _session;
 }
 
+// 监听网络状态变化
+- (void)reachabilityChanged {
+    if ([_reachability currentReachabilityStatus] == ReachableViaWiFi) {
+        // 如果当前变为wifi, 则检测当前是否有可以下载的任务。
+        [_modules enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, OPOfflineModule * _Nonnull obj, BOOL * _Nonnull stop) {
+            if (obj.checkState == OPOfflineCheckStateBeforeDownload && obj.downloadTimeSetting == OPOfflineModuleDownloadTimeWhenInWiFi) {
+                // 当前需要下载，且需要wifi情况时.
+                dispatch_async(self->_queue, ^{
+                    [obj startDownload];
+                });
+            }
+        }];
+    }
+}
+
 - (void)checkUpdate {
     // 检测更新
     NSDate *checkTime = [NSDate date];
@@ -241,7 +266,28 @@ NSString *const OPOfflineLocalBackFileName = @".axe-offline-pack";
         return;
     }
     _lastCheckTime = checkTime;
-    [[self.session dataTaskWithURL:_queryAllUrl completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:_queryAllUrl];
+    request.HTTPMethod = @"POST";
+    if (!_tags || !_appVersion) {
+        NSLog(@"tags 或 appVersion设置异常 ！！！");
+        return;
+    }
+    NSDictionary *query = @{
+                            OfflinePackServerKeyTags: _tags,
+                            OfflinePackServerKeyAppVersion: _appVersion
+                            };
+    NSError *error;
+    NSData *postData = [NSJSONSerialization dataWithJSONObject:query options:0 error:&error];
+    if (error) {
+        NSLog(@"转换json出错 ： %@", error);
+        return;
+    }
+    request.HTTPBody = postData;
+    [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    
+    [[self.session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (error) {
             NSLog(@"检测更新网络异常 ： %@",error);
         } else {
@@ -277,10 +323,10 @@ NSString *const OPOfflineLocalBackFileName = @".axe-offline-pack";
                             // 如果当前模块自己也在进行检测或者下载，则不处理。
                             return;
                         }
-                        NSInteger setting = [[info objectForKey:OfflinePackServerKeyUpdateSetting] integerValue];
-                        current.setting = setting;
+                        current.downloadForceSetting = [[info objectForKey:OfflinePackServerKeyDownloadForce] integerValue];
+                        current.downloadTimeSetting = [[info objectForKey:OfflinePackServerKeyDownloadTime] integerValue];
+
                         NSDictionary *patchs = [info objectForKey:OfflinePackServerKeyPatchsInfo];
-                        
                         NSString *downloadURL = [patchs objectForKey:[@(current.version) stringValue]];
                         // 检测是否有增量包。
                         if (downloadURL) {
@@ -292,19 +338,25 @@ NSString *const OPOfflineLocalBackFileName = @".axe-offline-pack";
                         }
                         current.downloadURL = downloadURL;
                         current.checkState = OPOfflineCheckStateBeforeDownload;
-                        if (current.setting != OPOfflineModuleUpdateSettingOnlyUse) {
-                            // 开始下载。
+                        // 判断是否需要下载
+                        if (current.downloadTimeSetting == OPOfflineModuleDownloadTimeImmediately) {
+                            // 如果是立即下载，则进行下载
                             dispatch_async(self->_queue, ^{
                                 [current startDownload];
                             });
+                        } else if (current.downloadTimeSetting == OPOfflineModuleDownloadTimeWhenInWiFi) {
+                            // 检测当前是否在WiFi环境下
+                            if ([self->_reachability currentReachabilityStatus] == ReachableViaWiFi) {
+                                dispatch_async(self->_queue, ^{
+                                    [current startDownload];
+                                });
+                            }
                         }
                     }
                 }];
             }
         }
     }] resume];
-    
-    
 }
 
 
@@ -328,7 +380,7 @@ NSString *const OPOfflineLocalBackFileName = @".axe-offline-pack";
         if (module.version < 0) {
             // 如果模块没有本地内容
             module.needCheckUpdate = YES;
-        } else if(module.setting == OPOfflineModuleUpdateSettingForce) {
+        } else if(module.downloadForceSetting == OPOfflineModuleForceDownload) {
             // 如果设置了强制更新。
             module.needCheckUpdate = YES;
         }
@@ -344,7 +396,7 @@ NSString *const OPOfflineLocalBackFileName = @".axe-offline-pack";
             if (module.version < 0) {
                 // 如果模块没有本地内容
                 module.needCheckUpdate = YES;
-            } else if(module.setting == OPOfflineModuleUpdateSettingForce) {
+            } else if(module.downloadForceSetting == OPOfflineModuleForceDownload) {
                 // 如果设置了强制更新。
                 module.needCheckUpdate = YES;
             }
@@ -355,7 +407,7 @@ NSString *const OPOfflineLocalBackFileName = @".axe-offline-pack";
             if (module.version < 0) {
                 // 如果模块没有本地内容
                 module.needCheckUpdate = YES;
-            } else if(module.setting == OPOfflineModuleUpdateSettingForce) {
+            } else if(module.downloadForceSetting == OPOfflineModuleForceDownload) {
                 // 如果设置了强制更新。
                 module.needCheckUpdate = YES;
             }

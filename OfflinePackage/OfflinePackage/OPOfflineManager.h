@@ -40,20 +40,20 @@
 
 
 /**
-  必须要设置appID， 这里后台系统支持多app，所以通过一个appID来标记不同应用。
+  tags , 标签匹配
  */
-@property (nonatomic,copy) NSString *appID;
+@property (nonatomic,copy) NSArray<NSString *> *tags;
 
 
 /**
-  APP版本号， 离线包支持版本号控制。 版本号为数字类型，建议使用BuildNumber
+  APP版本号，三段式， 默认获取Info.plist的版本号。
  */
-@property (nonatomic,assign) NSInteger appVersion;
+@property (nonatomic,assign) NSString *appVersion;
 
 /**
  初始化，加载本地数据，以及检测更新
  @param pubicPem 公钥字符串， pkcs8格式，即 BEGIN PUBLIC KEY 开头的。
- @param baseURL 服务器地址。 如 http://offline.luoxianming.cn/ 则两个请求的地址分别为 http://offline.luoxianming.cn/allPacks 和 http://offline.luoxianming.cn/pack
+ @param baseURL 服务器地址。 如 http://offline.luoxianming.cn/ 则两个请求的地址分别为 http://offline.luoxianming.cn/full 和 http://offline.luoxianming.cn/pack
  */
 - (void)setUpWithPublicPKCS8Pem:(NSString *)pubicPem baseURL:(NSString *)baseURL;
 

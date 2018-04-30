@@ -45,7 +45,6 @@ static NSString *const OfflinePackServerKeyModuleName = @"moduleName";
     if (self = [super init]) {
         _version = -1;
         _needCheckUpdate = NO;
-        _setting = OPOfflineModuleUpdateSettingDefault;
         _verified = NO;
         _needCheckUpdate = NO;
         _newVersion = -1;
@@ -59,13 +58,34 @@ static NSString *const OfflinePackServerKeyModuleName = @"moduleName";
 
 
 - (void)startCheck {
-    // 检测
+    // 模块中的检测更新，为进入模块时的检测更新， 所以如果有更新，是必须要启动的。
     if (_checkState != OPOfflineCheckStateWaiting) {
         return;
     }
     _checkState = OPOfflineCheckStateChecking;
-    NSString *url = [[[OPOfflineManager sharedManager].queryTaskUrl absoluteString] stringByAppendingFormat:@"&%@=%@",OfflinePackServerKeyModuleName,_name];
-    [[[OPOfflineManager sharedManager].session dataTaskWithURL:[NSURL URLWithString:url] completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[OPOfflineManager sharedManager].queryTaskUrl];
+    request.HTTPMethod = @"POST";
+    if (![OPOfflineManager sharedManager].tags || ![OPOfflineManager sharedManager].appVersion) {
+        NSLog(@"tags 或 appVersion设置异常 ！！！");
+        return;
+    }
+    NSDictionary *query = @{
+                            OfflinePackServerKeyTags: [OPOfflineManager sharedManager].tags,
+                            OfflinePackServerKeyAppVersion: [OPOfflineManager sharedManager].appVersion,
+                            OfflinePackServerKeyModuleName: _name
+                            };
+    NSError *error;
+    NSData *postData = [NSJSONSerialization dataWithJSONObject:query options:0 error:&error];
+    if (error) {
+        NSLog(@"转换json出错 ： %@", error);
+        return;
+    }
+    request.HTTPBody = postData;
+    [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
+
+    [[[OPOfflineManager sharedManager].session dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         if (error) {
             NSLog(@"检测更新网络异常 : %@",error);
             [self endWithErrorCode:OPDownloadErrorNetwork message:@"检测更新网络异常 ！！！"];
@@ -88,7 +108,8 @@ static NSString *const OfflinePackServerKeyModuleName = @"moduleName";
             if (newVersion > self->_version) {
                 self->_newVersion = newVersion;
                 [self printProcess:10];// 检测完成，为10%进度。
-                self->_setting = [[json objectForKey:OfflinePackServerKeyUpdateSetting] integerValue];
+                self->_downloadTimeSetting = [[json objectForKey:OfflinePackServerKeyDownloadTime] integerValue];
+                self->_downloadForceSetting = [[json objectForKey:OfflinePackServerKeyDownloadForce] integerValue];
                 NSDictionary *patchsInfo = [json objectForKey:OfflinePackServerKeyPatchsInfo];
                 NSString *downloadURL = [patchsInfo objectForKey:[@(self->_version) stringValue]];
                 if (downloadURL) {

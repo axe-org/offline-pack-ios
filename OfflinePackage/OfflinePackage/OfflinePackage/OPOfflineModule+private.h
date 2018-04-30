@@ -9,12 +9,17 @@
 #import <Foundation/Foundation.h>
 #import "OPOfflineModule.h"
 
+// 模块下载时机
+typedef NS_ENUM(NSUInteger, OPOfflineModuleDownloadTime) {
+    OPOfflineModuleDownloadTimeImmediately = 0, // 立即下载， 请求到新版本后，立即进行下载。
+    OPOfflineModuleDownloadTimeBeforeUse = 1, // 按序下载， 指使用模块时，才进行更新。
+    OPOfflineModuleDownloadTimeWhenInWiFi = 2, // 当网络为Wifi情况时，进行下载。 但是使用模块时，也是会进行更新的。
+};
 
-// 当本地模块找不到，或者未下载时， 都是强制更新，需要弹出下载框
-typedef NS_ENUM(NSUInteger, OPOfflineModuleUpdateSetting) {
-    OPOfflineModuleUpdateSettingDefault = 0, // 静态更新， 即检测到更新后，立即静默下载更新。
-    OPOfflineModuleUpdateSettingOnlyUse = 1, // 只有在页面启动时，才进行更新。但是也是静默下载。
-    OPOfflineModuleUpdateSettingForce = 2, // 强制更新， 在页面启动时， 如果需要检测更新，则会立即更新，且弹出阻断式弹框。
+// 是否强制更新
+typedef NS_ENUM(NSUInteger, OPOfflineModuleForceSetting) {
+    OPOfflineModuleForceDownload = 1, // 强制更新， 弹出弹框，下载完成后，才可以进入模块。
+    OPOfflineModuleSilentDownload = 0, // 静默下载， 依旧使用旧版本模块， 静默下载内容 . 但是如果模块没有本地版本，还是会 阻断式下载。
 };
 
 typedef NS_ENUM(NSUInteger, OPOfflineCheckState) {
@@ -46,11 +51,9 @@ typedef NS_ENUM(NSUInteger, OPOfflineCheckState) {
  */
 @property (nonatomic,strong) NSString *path;
 @property (nonatomic,strong) NSURL *url;
-/**
-  更新设置。 如果优先以网络返回值为准， 但是如果网络没有返回，则以本地为准。
- */
-@property (nonatomic,assign) OPOfflineModuleUpdateSetting setting;
 
+@property (nonatomic,assign) OPOfflineModuleDownloadTime downloadTimeSetting;
+@property (nonatomic,assign) OPOfflineModuleForceSetting downloadForceSetting;
 /**
   hash内容， 等待加载时校验哈希
  */
@@ -108,10 +111,13 @@ typedef NS_ENUM(NSUInteger, OPOfflineCheckState) {
 @end
 
 
+extern NSString *const OfflinePackServerKeyAppVersion;
+extern NSString *const OfflinePackServerKeyTags;
 extern NSString *const OfflinePackServerKeyError;
 extern NSString *const OfflinePackServerKeyName;
 extern NSString *const OfflinePackServerKeyVersion;
-extern NSString *const OfflinePackServerKeyUpdateSetting;
+extern NSString *const OfflinePackServerKeyDownloadTime;
+extern NSString *const OfflinePackServerKeyDownloadForce;
 extern NSString *const OfflinePackServerKeyDownloadURL;
 extern NSString *const OfflinePackServerKeyPatchsInfo;
 extern NSString *const OPOfflineLocalBackFileName;
